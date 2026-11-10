@@ -1,6 +1,6 @@
 FROM alpine:3.18
 
-# Add metadata labels to simulate engineering ownership
+# Add metadata labels to simulate engineering ownership ########
 LABEL maintainer="luca.feudi@gmail.com"
 LABEL application="wiz-demo-target"
 
