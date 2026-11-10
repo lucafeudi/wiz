@@ -1,7 +1,7 @@
 FROM alpine:3.18
 
 # Add metadata labels to simulate engineering ownership ########
-LABEL maintainer="luca.feudi@gmail.com"
+LABEL maintainer="luca.feud@gmail.com"
 LABEL application="wiz-demo-target"
 
 # Create the specific validation text file as requested by the exercise
