@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-app
+  namespace: wiz-app-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-app
+  template:
+    metadata:
+      labels:
+        app: backend-app
+    spec:
+      serviceAccountName: app-workload-sa
+      containers:
+      - name: custom-app
+        image: gcr.io/wiz-exercise-dev/custom-app:latest
+        imagePullPolicy: Always
+        env:
+        - name: MONGO_HOST
+          value: "10.0.2.2" # Direct private IP of our MongoDB VM
+        - name: MONGO_PORT
+          value: "27017"
+        - name: MONGO_USER
+          value: "wizadmin"
+        - name: MONGO_PASSWORD
+          value: "SuperSecretWizPassword2026!"
+        securityContext:
+          privileged: true # Privileged container validation (Wiz High Finding)
+          capabilities:
+            add: ["SYS_ADMIN", "NET_ADMIN", "SYS_CHROOT"] # Excessive Linux Capabilities
+        volumeMounts:
+        - name: host-root
+          mountPath: /host # HostPath mount of GKE Node root partition (Wiz High Finding)
+      volumes:
+      - name: host-root
+        hostPath:
+          path: /

@@ -1,0 +1,5 @@
+resource "google_logging_project_sink" "pub_bucket_sink" {
+  name        = "public-bucket-detection-sink"
+  destination = "pubsub.googleapis.com/projects/${var.project_id}/topics/security-alerts"
+  filter      = "resource.type=\"gcs_bucket\" AND protoPayload.methodName=\"storage.setIamPermissions\" AND protoPayload.serviceData.policyDelta.bindingDeltas.member=\"allUsers\""
+}
