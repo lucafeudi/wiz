@@ -29,7 +29,6 @@ jobs:
       run: cd terraform && terraform validate
 
     - name: Run Checkov Static Analysis
-      name: Checkov Scan
       uses: bridgecrewio/checkov-action@master
       with:
         framework: terraform
