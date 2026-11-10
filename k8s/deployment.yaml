@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wiz-todo-app
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: wiz-todo-app
+  template:
+    metadata:
+      labels:
+        app: wiz-todo-app
+    spec:
+      containers:
+      - name: webapp
+        image: europe-west8-docker.pkg.dev/PROJECT_ID/wiz-repo/todo-app:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MONGO_URI
+          value: "mongodb://admin:SecurePassword123!@MONGODB_VM_IP:27017/todoapp?authSource=admin"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wiz-todo-service
+spec:
+  type: ClusterIP
+  selector:
+    app: wiz-todo-app
+  ports:
+  - port: 80
+    targetPort: 5000
+---
+# Cluster-wide admin role & binding (ClusterAdmin as requested)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: wiz-container-cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wiz-ingress
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: wiz-todo-service
+            port:
+              number: 80

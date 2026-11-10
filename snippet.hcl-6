@@ -1,5 +1,0 @@
-resource "google_folder_organization_policy" "block_public_ips" {
-  folder     = "folders/your-folder-id"
-  constraint = "constraints/compute.restrictAccessToConfigs"
-  # This can be shown as a failure when trying to run Terraform without proper exclusions
-}

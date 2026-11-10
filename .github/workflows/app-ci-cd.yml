@@ -1,0 +1,51 @@
+name: Build and Deploy App CI/CD
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'app/**'
+      - 'k8s/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Authenticate to Google Cloud via WIF
+      uses: google-github-actions/auth@v2
+      with:
+        workload_identity_provider: 'projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/github-actions-pool-wiz/providers/github-actions-provider'
+        service_account: 'github-ci-sa@PROJECT_ID.iam.gserviceaccount.com'
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: Configure Docker for Artifact Registry
+      run: gcloud auth configure-docker europe-west8-docker.pkg.dev
+
+    - name: Build and Push Container Image
+      run: |
+        docker build -t europe-west8-docker.pkg.dev/PROJECT_ID/wiz-repo/todo-app:latest ./app
+        docker push europe-west8-docker.pkg.dev/PROJECT_ID/wiz-repo/todo-app:latest
+
+    - name: Get GKE Credentials
+      uses: google-github-actions/get-gke-credentials@v2
+      with:
+        cluster_name: 'wiz-gke-cluster'
+        location: 'europe-west8-a'
+
+    - name: Deploy to Kubernetes
+      run: |
+        # Replace placeholders in k8s manifests
+        export MONGO_IP=$(terraform -chdir=terraform output -raw mongo_vm_ip 2>/dev/null || echo "10.0.1.5")
+        sed -i "s/PROJECT_ID/PROJECT_ID/g" k8s/deployment.yaml
+        sed -i "s/MONGODB_VM_IP/$MONGO_IP/g" k8s/deployment.yaml
+        kubectl apply -f k8s/deployment.yaml

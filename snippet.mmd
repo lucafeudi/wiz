@@ -1,4 +1,0 @@
-graph LR
-    GitRepo[(GitHub Repo)] -->|1. Webhook / Git Sync| ArgoCD[ArgoCD Controller]
-    ArgoCD -->|2. Reconcile Loop / Apply| K8sCluster[GKE Cluster API]
-    K8sCluster -->|3. Wiz Sensor/Agent| Wiz[(Wiz Portal)]

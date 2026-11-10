@@ -1,21 +1,22 @@
 variable "project_id" {
-  description = "Google Cloud project ID used for the demo infrastructure."
   type        = string
-
-  validation {
-    condition     = length(var.project_id) > 0
-    error_message = "project_id must be set to a Google Cloud project ID."
-  }
+  description = "GCP Project ID"
 }
 
 variable "region" {
-  description = "Google Cloud region for the demo infrastructure."
   type        = string
-  default     = "europe-west1"
+  default     = "europe-west8"
+  description = "GCP Region (Milan/Europe)"
 }
 
-variable "gke_cluster_name" {
-  description = "Name of the GKE cluster used by the app deployment workflow."
+variable "zone" {
   type        = string
-  default     = "gke-cluster"
+  default     = "europe-west8-a"
+  description = "GCP Zone"
+}
+
+variable "github_repo" {
+  type        = string
+  description = "GitHub repository in format owner/repo"
+  default     = "lucafeudi/wiz-exercise"
 }
