@@ -20,7 +20,7 @@ jobs:
         terraform_version: 1.5.0
 
     - name: Terraform Format Check
-      run: terraform fmt -check -recursive ./terraform
+      run: terraform fmt -check -recursive .
 
     - name: Terraform Init
       run: cd terraform && terraform init -backend=false
@@ -49,13 +49,21 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.0
+
     - name: Authenticate to GCP
       uses: google-github-actions/auth@v1
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
+        project_id: ${{ vars.GCP_PROJECT_ID }}
 
     - name: Terraform Apply
+      env:
+        TF_VAR_project_id: ${{ vars.GCP_PROJECT_ID }}
       run: |
         cd terraform
-        terraform init
-        terraform apply -auto-approve
+        terraform init -input=false
+        terraform apply -input=false -auto-approve
