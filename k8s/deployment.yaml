@@ -19,7 +19,7 @@ spec:
         ports:
         - containerPort: 5000
         env:
-        - name: MONGO_URI
+        - name: MONGODB_URI
           value: "mongodb://admin:SecurePassword123!@MONGODB_VM_IP:27017/todoapp?authSource=admin"
 ---
 apiVersion: v1
