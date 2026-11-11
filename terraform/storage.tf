@@ -1,7 +1,7 @@
 # Cloud Storage Bucket for MongoDB Backups (Publicly Readable and Listable)
 resource "google_storage_bucket" "backups" {
   name                        = "${lower(var.project_id)}-mongo-backups-wiz"
-  location                    = "EU"
+  location                    = "europe-west1"
   uniform_bucket_level_access = false # Allow legacy ACLs/bindings for public access
   force_destroy               = true
 }
