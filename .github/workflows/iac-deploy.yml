@@ -22,7 +22,7 @@ jobs:
     - name: Authenticate to Google Cloud via WIF
       uses: google-github-actions/auth@v2
       with:
-        workload_identity_provider: 'projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/github-actions-pool-wiz/providers/github-actions-provider'
+        workload_identity_provider: 'projects/957162898991/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider'
         service_account: 'github-ci-sa@PROJECT_ID.iam.gserviceaccount.com'
 
     - name: Setup Terraform

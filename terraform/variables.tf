@@ -5,18 +5,18 @@ variable "project_id" {
 
 variable "region" {
   type        = string
-  default     = "europe-west8"
+  default     = "europe-west1"
   description = "GCP Region (Milan/Europe)"
 }
 
 variable "zone" {
   type        = string
-  default     = "europe-west8-a"
+  default     = "europe-west1-b"
   description = "GCP Zone"
 }
 
 variable "github_repo" {
   type        = string
   description = "GitHub repository in format owner/repo"
-  default     = "lucafeudi/wiz-exercise"
+  default     = "lucafeudi/wiz"
 }

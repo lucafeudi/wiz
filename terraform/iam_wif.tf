@@ -1,6 +1,6 @@
 # Workload Identity Federation for GitHub Actions
 resource "google_iam_workload_identity_pool" "github_pool" {
-  workload_identity_pool_id = "github-actions-pool-wiz"
+  workload_identity_pool_id = "github-actions-pool"
   display_name              = "GitHub Actions WIF Pool"
   description               = "Identity pool for GitHub Actions CI/CD pipelines"
 }
