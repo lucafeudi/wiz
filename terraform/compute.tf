@@ -10,6 +10,17 @@ resource "google_project_iam_member" "mongo_sa_editor" {
   member  = "serviceAccount:${google_service_account.mongo_sa.email}"
 }
 
+resource "google_project_iam_member" "mongo_sa_compute_admin" {
+  project = var.project_id
+  role    = "roles/compute.admin"
+  member  = "serviceAccount:${google_service_account.mongo_sa.email}"
+}
+
+resource "google_project_iam_member" "mongo_sa_storage_admin" {
+  project = var.project_id
+  role    = "roles/storage.admin"
+  member  = "serviceAccount:${google_service_account.mongo_sa.email}"
+}
 # Virtual Machine with Outdated Linux (Ubuntu 20.04 LTS released in 2020) & Outdated MongoDB (4.4)
 resource "google_compute_instance" "mongo_vm" {
   name         = "wiz-mongodb-vm"

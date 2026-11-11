@@ -54,3 +54,10 @@ resource "google_service_account_iam_member" "wif_binding" {
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool.name}/attribute.repository/${var.github_repo}"
 }
+
+
+resource "google_project_iam_member" "github_ci_wif_admin" {
+  project = var.project_id
+  role    = "roles/iam.workloadIdentityAdmin"
+  member  = "serviceAccount:${google_service_account.github_ci.email}"
+}
