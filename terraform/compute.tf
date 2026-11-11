@@ -30,8 +30,8 @@ resource "google_compute_instance" "mongo_vm" {
 
   boot_disk {
     initialize_params {
-      # Ubuntu 20.04 LTS - 1+ year outdated Linux image
-      image = "ubuntu-os-cloud/ubuntu-2004-lts"
+      # Updated image reference for Ubuntu 20.04 LTS
+      image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2004-lts"
       size  = 30
     }
   }
