@@ -17,13 +17,6 @@ provider "google" {
   region  = var.region
 }
 
-# Configured to run after GKE cluster is provisioned
-data "google_container_cluster" "primary" {
-  name     = var.gke_cluster_name
-  location = var.region
-  depends_on = [module.gke]
-}
-
 provider "kubernetes" {
   host                   = "https://${data.google_container_cluster.primary.endpoint}"
   token                  = data.google_client_config.default.access_token
