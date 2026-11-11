@@ -1,14 +1,18 @@
-FROM python:3.9-slim
+# Building the binary of the App
+FROM golang:1.19 AS build
+
+WORKDIR /go/src/tasky
+COPY . .
+RUN go mod download
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /go/src/tasky/tasky
+
+
+FROM alpine:3.17.0 as release
 
 WORKDIR /app
+COPY --from=build  /go/src/tasky/tasky .
+COPY --from=build  /go/src/tasky/assets ./assets
+EXPOSE 8080
+ENTRYPOINT ["/app/tasky"]
 
-# Include wizexercise.txt with name Luca Feudi
-RUN echo "Luca Feudi" > wizexercise.txt
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-EXPOSE 5000
-CMD ["python", "app.py"]

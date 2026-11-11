@@ -23,7 +23,7 @@ jobs:
       uses: google-github-actions/auth@v2
       with:
         workload_identity_provider: 'projects/957162898991/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider'
-        service_account: 'github-ci-sa@PROJECT_ID.iam.gserviceaccount.com'
+        service_account: 'github-ci-sa@clgcporg10-157.iam.gserviceaccount.com'
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
@@ -33,8 +33,8 @@ jobs:
 
     - name: Build and Push Container Image
       run: |
-        docker build -t europe-west1-docker.pkg.dev/PROJECT_ID/wiz-repo/todo-app:latest ./app
-        docker push europe-west1-docker.pkg.dev/PROJECT_ID/wiz-repo/todo-app:latest
+        docker build -t europe-west1-docker.pkg.dev/clgcporg10-157/wiz-repo/todo-app:latest ./app
+        docker push europe-west1-docker.pkg.dev/clgcporg10-157/wiz-repo/todo-app:latest
 
     - name: Get GKE Credentials
       uses: google-github-actions/get-gke-credentials@v2
@@ -46,6 +46,6 @@ jobs:
       run: |
         # Replace placeholders in k8s manifests
         export MONGO_IP=$(terraform -chdir=terraform output -raw mongo_vm_ip 2>/dev/null || echo "10.0.1.5")
-        sed -i "s/PROJECT_ID/PROJECT_ID/g" k8s/deployment.yaml
+        sed -i "s/PROJECT_ID/clgcporg10-157/g" k8s/deployment.yaml
         sed -i "s/MONGODB_VM_IP/$MONGO_IP/g" k8s/deployment.yaml
         kubectl apply -f k8s/deployment.yaml
