@@ -31,7 +31,7 @@ resource "google_compute_instance" "mongo_vm" {
   boot_disk {
     initialize_params {
       # Updated image reference for Ubuntu 20.04 LTS
-      image = "ubuntu-pro-2004-focal-v20261104a"
+      image = "ubuntu-os-pro-cloud/ubuntu-pro-2004-lts"
       size  = 30
     }
   }
