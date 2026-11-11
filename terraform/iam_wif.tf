@@ -1,6 +1,6 @@
 # Workload Identity Federation for GitHub Actions
 resource "google_iam_workload_identity_pool" "github_pool" {
-  workload_identity_pool_id = "github-actions-pool"
+  workload_identity_pool_id = "github-actions-pool-wiz"
   display_name              = "GitHub Actions WIF Pool"
   description               = "Identity pool for GitHub Actions CI/CD pipelines"
 }
@@ -58,6 +58,6 @@ resource "google_service_account_iam_member" "wif_binding" {
 
 resource "google_project_iam_member" "github_ci_wif_admin" {
   project = var.project_id
-  role    = "roles/iam.workloadIdentityAdmin"
+  role    = "roles/iam.securityAdmin"
   member  = "serviceAccount:${google_service_account.github_ci.email}"
 }
