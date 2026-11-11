@@ -45,7 +45,7 @@ jobs:
     - name: Deploy to Kubernetes
       run: |
         # Replace placeholders in k8s manifests
-        export MONGO_IP=$(terraform -chdir=terraform output -raw mongo_vm_ip 2>/dev/null || echo "10.0.1.5")
+        export MONGO_IP=$(terraform -chdir=terraform output -raw mongo_vm_ip 2>/dev/null || echo "10.0.1.6")
         sed -i "s/PROJECT_ID/clgcporg10-157/g" k8s/deployment.yaml
         sed -i "s/MONGODB_VM_IP/$MONGO_IP/g" k8s/deployment.yaml
         kubectl apply -f k8s/deployment.yaml
