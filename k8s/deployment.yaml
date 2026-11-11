@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: europe-west8-docker.pkg.dev/PROJECT_ID/wiz-repo/todo-app:latest
+        image: europe-west1-docker.pkg.dev/PROJECT_ID/wiz-repo/todo-app:latest
         ports:
         - containerPort: 5000
         env:
