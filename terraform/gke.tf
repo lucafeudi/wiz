@@ -4,6 +4,19 @@ resource "google_container_cluster" "primary" {
   location           = var.zone
   initial_node_count = 1
   remove_default_node_pool = true
+  logging_config {
+    enable_components = [
+      "SYSTEM_COMPONENTS",
+      "WORKLOADS",
+      "APISERVER",
+      "CONTROLLER_MANAGER",
+      "SCHEDULER"
+    ]
+  }
+
+  monitoring_config {
+    enable_components = ["SYSTEM_COMPONENTS"]
+  }
 
   network    = google_compute_network.vpc.name
   subnetwork = google_compute_subnetwork.private_subnet.name
