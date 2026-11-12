@@ -23,10 +23,21 @@ spec:
         - name: MONGODB_URI
           value: "mongodb://admin:SecurePassword123!@MONGODB_VM_IP:27017/todoapp?authSource=admin"
 ---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: wiz-cloud-armor
+  namespace: default
+spec:
+  securityPolicy:
+    name: wiz-ingress-policy
+---
 apiVersion: v1
 kind: Service
 metadata:
   name: wiz-todo-service
+  annotations:
+    cloud.google.com/backend-config: '{"default":"wiz-cloud-armor"}'
 spec:
   type: ClusterIP
   selector:
