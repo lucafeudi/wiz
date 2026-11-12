@@ -92,4 +92,10 @@ resource "google_compute_instance" "mongo_vm" {
     chmod +x /usr/local/bin/mongo-backup.sh
     (crontab -l 2>/dev/null; echo "0 2 * * * /usr/local/bin/mongo-backup.sh") | crontab -
   EOT
+  # Prevent Terraform from recreating the VM when the image family updates
+  lifecycle {
+    ignore_changes = [
+      boot_disk[0].initialize_params[0].image,
+    ]
+  }
 }
