@@ -21,14 +21,23 @@ jobs:
       security-events: write # Required to upload SARIF to GitHub Security tab
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Run Trivy IaC Config Scan (SARIF Report)
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          scan-type: 'config'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'security-reports/trivy-iac-results.sarif'
-          severity: 'CRITICAL,HIGH'
+          - name: Checkout repository
+            uses: actions/checkout@v4
+          # 1. Ensure the target directory exists before Trivy runs
+          - name: Create security reports directory
+            run: mkdir -p security-reports
+          # 2. Run Trivy vulnerability scanner
+          - name: Run Trivy vulnerability scanner
+            uses: aquasecurity/trivy-action@master
+            with:
+              scan-type: 'config'
+              scan-dir: '.'
+              format: 'sarif'
+              output: 'security-reports/trivy-iac-results.sarif'
+              severity: 'CRITICAL,HIGH'
+          # 3. Upload the SARIF file
+          - name: Upload SARIF file
+            uses: github/codeql-action/upload-sarif@v4
+            with:
+              sarif_file: security-reports/trivy-iac-results.sarif
+              category: trivy-iac
