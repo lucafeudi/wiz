@@ -44,8 +44,15 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        # Replace placeholders in k8s manifests
-        export MONGO_IP=$(terraform -chdir=terraform output -raw mongo_vm_ip 2>/dev/null || echo "10.0.1.6")
+        # Fetch the internal IP of the MongoDB VM directly using gcloud
+        MONGO_IP=$(gcloud compute instances describe wiz-mongodb-vm \
+          --zone=europe-west1-b \
+          --project=clgcporg10-157 \
+          --format='get(networkInterfaces[0].networkIP)')
+        
+        echo "Using MongoDB IP: $MONGO_IP"
+        
+        # Replace placeholders in k8s manifests and apply
         sed -i "s/PROJECT_ID/clgcporg10-157/g" k8s/deployment.yaml
         sed -i "s/MONGODB_VM_IP/$MONGO_IP/g" k8s/deployment.yaml
         kubectl apply -f k8s/deployment.yaml
