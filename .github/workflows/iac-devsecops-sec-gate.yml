@@ -17,6 +17,7 @@ jobs:
     name: Scan IaC & Misconfigurations
     runs-on: ubuntu-latest
     permissions:
+      actions: read
       contents: read
       security-events: write # Required to upload SARIF to GitHub Security tab
 
