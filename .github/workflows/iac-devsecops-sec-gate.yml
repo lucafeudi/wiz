@@ -1,0 +1,48 @@
+name: DevSecOps Security Gate
+
+on:
+  push:
+    branches: [ wiz ]
+  pull_request:
+    branches: [ wiz ]
+
+# Enforce least-privilege permissions globally
+permissions:
+  contents: read
+
+jobs:
+  iac-security-scan:
+    name: Scan IaC & Misconfigurations
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write # Required to upload SARIF to GitHub Security tab
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Trivy IaC Config Scan (SARIF Report)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: 'config'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-iac-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload IaC Scan Results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-iac-results.sarif'
+          category: 'trivy-iac'
+
+      - name: Enforce IaC Security Gate (Fail on High/Critical)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: 'config'
+          scan-ref: '.'
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
