@@ -26,9 +26,7 @@ resource "google_compute_address" "mongo_static_ip" {
   name         = "wiz-mongodb-static-ip"
   project      = var.project_id
   region       = "europe-west1"
-  subnetwork   = "default"
-  address_type = "INTERNAL"
-}
+  address_type = "EXTERNAL"  
 
 
 # Virtual Machine with Outdated Linux (Ubuntu 20.04 LTS released in 2020) & Outdated MongoDB (4.4)
@@ -47,11 +45,11 @@ resource "google_compute_instance" "mongo_vm" {
   }
 
   network_interface {
-    network    = "default"
-    subnetwork = "default"
-    # Pin the VM to the reserved static internal IP
-    network_ip = google_compute_address.mongo_static_ip.address
-  }
+      subnetwork = "wiz-public-subnet"
+      access_config {
+        nat_ip = google_compute_address.mongo_static_ip.address
+      }
+    }
 
   service_account {
     email  = google_service_account.mongo_sa.email
