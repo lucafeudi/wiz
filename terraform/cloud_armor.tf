@@ -2,12 +2,11 @@ resource "google_compute_security_policy" "ingress" {
   name        = "wiz-ingress-policy"
   description = "Cloud Armor policy for the Wiz ingress"
 
-# Enable advanced JSON parsing for WAF evaluation if inspecting API bodies
   advanced_options_config {
     json_parsing = "STANDARD"
   }
 
-  # Rule 1: Rate Limiting (Protects against volumetric abuse, credential stuffing, and brute-forcing)
+  # Rule 1: Rate Limiting (Abuse/Brute-force protection)
   rule {
     action   = "rate_based_ban"
     priority = 1000
@@ -19,7 +18,7 @@ resource "google_compute_security_policy" "ingress" {
     }
     rate_limit_options {
       conform_action = "allow"
-      exceed_action  = "deny(429)" # Returns HTTP 429 Too Many Requests
+      exceed_action  = "deny(429)"
       enforce_on_key = "IP"
 
       rate_limit_threshold {
@@ -31,61 +30,63 @@ resource "google_compute_security_policy" "ingress" {
         count        = 500
         interval_sec = 60
       }
-      ban_duration_sec = 600 # Temporarily ban IP for 10 minutes if limits are aggressively exceeded
+      ban_duration_sec = 600
     }
     description = "Rate limit to 100 req/min per IP; ban for 10 mins if exceeding 500 req/min"
   }
 
-  # Rule 2: OWASP Top 10 - SQL Injection (SQLi) Protection
+  # Rule 2: SQL Injection (SQLi) Protection
   rule {
     action   = "deny(403)"
     priority = 2000
     match {
       expr {
-        expression = "evaluateSqlInjection()"
+        expression = "evaluatePreconfiguredWaf('sqli-v422-stable', {'sensitivity': 2})"
       }
     }
-    description = "Block OWASP SQL injection attacks"
+    description = "Block SQL injection attacks"
   }
 
-  # Rule 3: OWASP Top 10 - Cross-Site Scripting (XSS) Protection
+  # Rule 3: Cross-Site Scripting (XSS) Protection
   rule {
     action   = "deny(403)"
     priority = 2001
     match {
       expr {
-        expression = "evaluateXss()"
+        expression = "evaluatePreconfiguredWaf('xss-v422-stable', {'sensitivity': 2})"
       }
     }
-    description = "Block OWASP Cross-Site Scripting attacks"
+    description = "Block Cross-Site Scripting attacks"
   }
 
-  # Rule 4: OWASP Top 10 - Remote File Inclusion (RFI) / Local File Inclusion (LFI)
+  # Rule 4: Remote File Inclusion (RFI) Protection
   rule {
     action   = "deny(403)"
     priority = 2002
     match {
       expr {
-        expression = "evaluatePreconfiguredWaf('rfi-v33-tag', {'sensitivity': 2})"
+        expression = "evaluatePreconfiguredWaf('rfi-v422-stable', {'sensitivity': 2})"
       }
     }
     description = "Block Remote File Inclusion attacks"
   }
 
-  # Rule 5: OWASP Top 10 - Remote Code Execution (RCE)
+  # Rule 5: Remote Code Execution (RCE) Protection
   rule {
     action   = "deny(403)"
     priority = 2003
     match {
       expr {
-        expression = "evaluatePreconfiguredWaf('rce-v33-tag', {'sensitivity': 2})"
+        expression = "evaluatePreconfiguredWaf('rce-v422-stable', {'sensitivity': 2})"
       }
     }
     description = "Block Remote Code Execution attacks"
   }
+
+  # Default Rule: Allow all other traffic
   rule {
-    action      = "allow"
-    priority    = 2147483647
+    action   = "allow"
+    priority = 2147483647
     description = "Default allow; add protective rules above this"
 
     match {
