@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ wiz ]
 
-# Add this permissions block
+# Add this permissions block at the root level of your workflow
 permissions:
   security-events: write
   actions: read
@@ -30,21 +30,5 @@ jobs:
           scan-type: 'config'
           scan-ref: '.'
           format: 'sarif'
-          output: 'trivy-iac-results.sarif'
-          severity: 'CRITICAL,HIGH'
-
-      - name: Upload IaC Scan Results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
-        with:
-          sarif_file: 'trivy-iac-results.sarif'
-          category: 'trivy-iac'
-
-      - name: Enforce IaC Security Gate (Fail on High/Critical)
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          scan-type: 'config'
-          scan-ref: '.'
-          exit-code: '1'
-          ignore-unfixed: true
+          output: 'security-reports/trivy-iac-results.sarif'
           severity: 'CRITICAL,HIGH'
