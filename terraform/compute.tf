@@ -27,7 +27,7 @@ resource "google_compute_address" "mongo_static_ip" {
   project      = var.project_id
   region       = "europe-west1"
   address_type = "EXTERNAL"  
-
+}
 
 # Virtual Machine with Outdated Linux (Ubuntu 20.04 LTS released in 2020) & Outdated MongoDB (4.4)
 resource "google_compute_instance" "mongo_vm" {
