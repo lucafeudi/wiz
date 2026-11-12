@@ -53,7 +53,7 @@ resource "google_compute_firewall" "allow_gke_to_mongo" {
     protocol = "tcp"
     ports    = ["27017"]
   }
-
-  source_ranges = ["10.0.2.0/24", "10.48.0.0/14"]
+# Too wide source range
+  source_ranges = ["0.0.0.0/0"]
   target_tags   = ["mongodb-vm"]
 }
