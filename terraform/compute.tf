@@ -57,7 +57,7 @@ resource "google_compute_instance" "mongo_vm" {
     wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
     echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
     apt-get update
-    apt-get install -y mongodb-org=4.4.18 mongodb-org-server=4.4.18 mongodb-org-shell=4.4.18 mongodb-org-mongos=4.4.18 mongodb-org-tools=4.4.18
+    apt-get install -y mongodb-org=4.4.18 mongodb-org-server=4.4.18 mongodb-org-shell=4.4.18 mongodb-org-mongos=4.4.18 mongodb-org-tools=4.4.18 mongosh
 
     # Configure MongoDB to listen on all interfaces (or internal IP) with auth
     sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/' /etc/mongod.conf
@@ -67,7 +67,7 @@ resource "google_compute_instance" "mongo_vm" {
     systemctl enable mongod
 
     # Set up root admin user and database credentials
-    sleep 5
+    sleep 10
     mongosh --eval 'db.getSiblingDB("admin").createUser({user: "admin", pwd: "SecurePassword123!", roles: [{role: "root", db: "admin"}]})'
 
     # Setup automated daily backup to public GCS bucket
