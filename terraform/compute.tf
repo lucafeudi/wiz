@@ -21,6 +21,16 @@ resource "google_project_iam_member" "mongo_sa_storage_admin" {
   role    = "roles/storage.admin"
   member  = "serviceAccount:${google_service_account.mongo_sa.email}"
 }
+
+resource "google_compute_address" "mongo_static_ip" {
+  name         = "wiz-mongodb-static-ip"
+  project      = var.project_id
+  region       = "europe-west1"
+  subnetwork   = "default"
+  address_type = "INTERNAL"
+}
+
+
 # Virtual Machine with Outdated Linux (Ubuntu 20.04 LTS released in 2020) & Outdated MongoDB (4.4)
 resource "google_compute_instance" "mongo_vm" {
   name         = "wiz-mongodb-vm"
@@ -37,10 +47,10 @@ resource "google_compute_instance" "mongo_vm" {
   }
 
   network_interface {
-    subnetwork = google_compute_subnetwork.public_subnet.name
-    access_config {
-      // Ephemeral public IP for SSH access
-    }
+    network    = "default"
+    subnetwork = "default"
+    # Pin the VM to the reserved static internal IP
+    network_ip = google_compute_address.mongo_static_ip.address
   }
 
   service_account {
