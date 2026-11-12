@@ -1,13 +1,13 @@
-# Enable the Artifact Analysis API
-resource "google_project_service" "artifactanalysis_api" {
+# Enable Container Analysis API
+resource "google_project_service" "container_analysis" {
   project            = var.project_id
-  service            = "artifactanalysis.googleapis.com"
+  service            = "containeranalysis.googleapis.com"
   disable_on_destroy = false
 }
 
-# Enable Container Analysis API 
-resource "google_project_service" "containeranalysis_api" {
+# Enable Container Scanning API for Artifact Registry
+resource "google_project_service" "container_scanning" {
   project            = var.project_id
-  service            = "containeranalysis.googleapis.com"
+  service            = "containerscanning.googleapis.com"
   disable_on_destroy = false
 }
