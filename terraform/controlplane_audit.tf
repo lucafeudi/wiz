@@ -1,6 +1,6 @@
 resource "google_project_iam_audit_config" "gke_audit_config" {
   project = var.project_id
-  service = "container.googleapis.com"
+  service = "allServices"
 
   audit_log_config {
     log_type = "ADMIN_READ"
