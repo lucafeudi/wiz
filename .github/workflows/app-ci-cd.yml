@@ -2,7 +2,7 @@ name: Build and Deploy App CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ wiz ]
     paths:
       - 'app/**'
       - 'k8s/**'

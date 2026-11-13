@@ -2,7 +2,7 @@ name: Deploy IaC with Terraform
 
 on:
   push:
-    branches: [ main ]
+    branches: [ wiz ]
     paths:
       - 'terraform/**'
   workflow_dispatch:
