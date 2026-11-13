@@ -85,7 +85,7 @@ resource "google_compute_instance" "mongo_vm" {
     BACKUP_DIR="/tmp/mongo_backup_$TIMESTAMP"
     mongodump --uri="mongodb://admin:SecurePassword123!@localhost:27017/admin?authSource=admin" --out=$BACKUP_DIR
     tar -zcvf /tmp/mongo_backup_$TIMESTAMP.tar.gz -C $BACKUP_DIR .
-    gsutil cp /tmp/mongo_backup_$TIMESTAMP.tar.gz gs://${google_storage_bucket.backups.name}/backup_$TIMESTAMP.tar.gz
+    /snap/bin/gsutil cp /tmp/mongo_backup_$TIMESTAMP.tar.gz gs://${google_storage_bucket.backups.name}/backup_$TIMESTAMP.tar.gz
     rm -rf $BACKUP_DIR /tmp/mongo_backup_$TIMESTAMP.tar.gz
     EOF
 
